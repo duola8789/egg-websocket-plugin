@@ -140,7 +140,9 @@ class EggWsServer {
                 this.server.emit('connection', conn, request);
                 const ctx = this._app.createContext(request, new http.ServerResponse(request));
                 const expandConn = conn;
-                expandConn.room = new EggWebsocketRoom(conn);
+                if (this._app.config.websocket && this._app.config.websocket.redis) {
+                    expandConn.room = new EggWebsocketRoom(conn);
+                }
                 ctx.websocket = expandConn;
                 controller(ctx).catch(e => {
                     // close websocket connection
