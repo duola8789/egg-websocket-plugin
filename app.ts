@@ -226,7 +226,11 @@ export class EggWsServer {
         new http.ServerResponse(request)
       );
       const expandConn: EggWsClient = (conn as unknown) as EggWsClient;
-      expandConn.room = new EggWebsocketRoom(conn);
+
+      if (this._app.config.websocket && this._app.config.websocket.redis) {
+        expandConn.room = new EggWebsocketRoom(conn);
+      }
+
       ctx.websocket = expandConn;
       controller(ctx).catch(e => {
         // close websocket connection
